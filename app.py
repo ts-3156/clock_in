@@ -18,7 +18,7 @@ last_action = {'idm': None, 'action': None, 'time': None}
 
 def is_raspberrypi():
     n = os.uname()
-    return n[0] == 'Linux' and n[1] == 'raspberry'
+    return n[0] == 'Linux' and n[1] == 'raspberrypi'
 
 def find_user(idm):
     global cur
