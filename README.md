@@ -19,5 +19,5 @@ sqlite> insert into users (name, idm, is_working) values ('shino', 'iiddmm', '0'
 ```
 
 ```
-SLACK_TOKEN=T SLACK_CHANNEL=C python app.py
+SLACK_TOKEN=T SLACK_CHANNEL=C sudo --preserve-env python app.py
 ```
