@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+
+import os
+import platform
+import subprocess
+import sys
+import time
+import sqlite3
+
+import suica
+
+con = sqlite3.connect('./clock_in.sqlite3')
+cur = con.cursor()
+
+clock_in_sound = './clock_in.mp3'
+clock_out_sound = './clock_out.mp3'
+last_action = {'idm': None, 'action': None, 'time': None}
+
+def is_raspberrypi():
+    n = os.uname()
+    return n[0] == 'Linux' and n[1] == 'raspberry'
+
+def find_user(idm):
+    global cur
+
+    if idm == None:
+        return None
+
+    result = cur.execute('select id, name, idm, is_working from users where idm = ?', (idm,))
+    row = result.fetchone()
+    if row == None:
+        return None
+
+    return {'id': row[0], 'name': row[1], 'idm': row[2], 'is_working': str(row[3]) == '1'}
+
+def clock_in(idm):
+    global last_action
+    cur.execute('update users set is_working = "1" where idm = ?', (idm,))
+    con.commit
+    if is_raspberrypi() and os.path.exists(clock_in_sound):
+         subprocess.call('omxplayer ' + clock_in_sound)
+    last_action = {'idm': idm, 'action': 'clock_in', 'time': time.time()}
+
+def clock_out(idm):
+    global last_action
+    cur.execute('update users set is_working = "0" where idm = ?', (idm,))
+    con.commit
+    if is_raspberrypi() and os.path.exists(clock_out_sound):
+         subprocess.call('omxplayer ' + clock_out_sound)
+    last_action = {'idm': idm, 'action': 'clock_out', 'time': time.time()}
+
+if __name__ == '__main__':
+    while True:
+        time.sleep(1)
+        idm = suica.read()
+        if idm == None:
+            continue
+
+        user = find_user(idm)
+        if user == None:
+            continue
+
+        if idm == last_action['idm'] and time.time() - last_action['time'] < 5:
+            continue
+
+        if user['is_working']:
+            clock_out(idm)
+            print('Clock out ' + user['name'])
+        else:
+            clock_in(idm)
+            print('Clock in ' + user['name'])
