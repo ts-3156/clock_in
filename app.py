@@ -7,6 +7,7 @@ import subprocess
 import sys
 import time
 
+import db
 import slack
 import suica
 import name
@@ -32,29 +33,6 @@ def is_raspberrypi():
     return n[0] == 'Linux' and n[1] == 'raspberrypi'
 
 
-def add_user(idm):
-    if idm is None:
-        return None
-
-    cur.execute('insert into users (name, idm, is_working) values (?, ?, 1)', (name.gen() + '(Set correct name)', idm))
-    con.commit()
-    return find_user(idm)
-
-
-def find_user(idm):
-    global cur
-
-    if idm is None:
-        return None
-
-    result = cur.execute('select id, name, idm, is_working from users where idm = ?', (idm,))
-    row = result.fetchone()
-    if row is None:
-        return None
-
-    return {'id': row[0], 'name': row[1], 'idm': row[2], 'is_working': str(row[3]) == '1'}
-
-
 def clock_in(idm):
     global last_action
     cur.execute('update users set is_working = "1" where idm = ?', (idm,))
@@ -77,12 +55,12 @@ if __name__ == '__main__':
     while True:
         time.sleep(1)
         idm = suica.read()
-        if idm is None:
+        if not idm:
             continue
 
-        user = find_user(idm)
+        user = db.find_user(idm)
         if user is None:
-            user = add_user(idm)
+            user = db.add_user(idm)
 
         if idm == last_action['idm'] and time.time() - last_action['time'] < 5:
             continue
