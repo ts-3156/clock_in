@@ -9,6 +9,7 @@ import time
 
 import slack
 import suica
+import name
 
 con = sqlite3.connect('./clock_in.sqlite3')
 cur = con.cursor()
@@ -31,6 +32,15 @@ def is_raspberrypi():
     return n[0] == 'Linux' and n[1] == 'raspberrypi'
 
 
+def add_user(idm):
+    if idm is None:
+        return None
+
+    cur.execute('insert into users (name, idm, is_working) values (?, ?, true)', (name.gen() + '(Set correct name)', idm))
+    con.commit()
+    return find_user(idm)
+
+
 def find_user(idm):
     global cur
 
@@ -48,7 +58,7 @@ def find_user(idm):
 def clock_in(idm):
     global last_action
     cur.execute('update users set is_working = "1" where idm = ?', (idm,))
-    con.commit
+    con.commit()
     if is_raspberrypi() and os.path.exists(clock_in_sound):
         subprocess.call('/usr/bin/omxplayer ' + clock_in_sound + ' >/dev/null 2>&1', shell=True)
     last_action = {'idm': idm, 'action': 'clock_in', 'time': time.time()}
@@ -57,7 +67,7 @@ def clock_in(idm):
 def clock_out(idm):
     global last_action
     cur.execute('update users set is_working = "0" where idm = ?', (idm,))
-    con.commit
+    con.commit()
     if is_raspberrypi() and os.path.exists(clock_out_sound):
         subprocess.call('/usr/bin/omxplayer ' + clock_out_sound + ' >/dev/null 2>&1', shell=True)
     last_action = {'idm': idm, 'action': 'clock_out', 'time': time.time()}
@@ -72,7 +82,7 @@ if __name__ == '__main__':
 
         user = find_user(idm)
         if user is None:
-            continue
+            user = add_user(idm)
 
         if idm == last_action['idm'] and time.time() - last_action['time'] < 5:
             continue
