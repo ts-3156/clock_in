@@ -14,7 +14,7 @@ def _post(text):
 
 
 def post(text):
-    threading.Thread(target=_post, args=(text,))
+    threading.Thread(target=_post, args=(text,)).start()
 
 
 if __name__ == '__main__':
