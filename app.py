@@ -36,7 +36,7 @@ def add_user(idm):
     if idm is None:
         return None
 
-    cur.execute('insert into users (name, idm, is_working) values (?, ?, true)', (name.gen() + '(Set correct name)', idm))
+    cur.execute('insert into users (name, idm, is_working) values (?, ?, 1)', (name.gen() + '(Set correct name)', idm))
     con.commit()
     return find_user(idm)
 
