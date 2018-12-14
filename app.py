@@ -30,8 +30,8 @@ def clock_out(idm):
 
 
 if __name__ == '__main__':
-    clock_in_sound = './clock_in.mp3'
-    clock_out_sound = './clock_out.mp3'
+    clock_in_sound = './sounds/clock_in.mp3'
+    clock_out_sound = './sounds/clock_out.mp3'
     last_action = {'idm': None, 'action': None, 'time': None}
 
     while True:
