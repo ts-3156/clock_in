@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import signal
 import os
 import platform
 import subprocess
@@ -16,6 +17,12 @@ cur = con.cursor()
 clock_in_sound = './clock_in.mp3'
 clock_out_sound = './clock_out.mp3'
 last_action = {'idm': None, 'action': None, 'time': None}
+
+def signal_handler(signal, frame):
+    print('Bye!')
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def is_raspberrypi():
     n = os.uname()
