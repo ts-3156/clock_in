@@ -10,10 +10,6 @@ import slack
 import sound
 import suica
 
-clock_in_sound = './clock_in.mp3'
-clock_out_sound = './clock_out.mp3'
-last_action = {'idm': None, 'action': None, 'time': None}
-
 
 def signal_handler(signal, frame):
     print('Bye!')
@@ -39,7 +35,9 @@ def clock_out(idm):
 
 
 if __name__ == '__main__':
-    global last_action
+    clock_in_sound = './clock_in.mp3'
+    clock_out_sound = './clock_out.mp3'
+    last_action = {'idm': None, 'action': None, 'time': None}
 
     while True:
         time.sleep(1)
