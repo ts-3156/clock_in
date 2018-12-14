@@ -19,11 +19,6 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 
-def is_raspberrypi():
-    n = os.uname()
-    return n[0] == 'Linux' and n[1] == 'raspberrypi'
-
-
 def clock_in(idm):
     db.set_working(idm, True)
     return {'idm': idm, 'action': 'clock_in', 'time': time.time()}
