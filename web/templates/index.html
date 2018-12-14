@@ -8,5 +8,7 @@
 {% for user in users %}
 <li>{{ user['id']}}, {{ user['name']}}, {{ user['idm'] }} <a href="/users/{{ user['id'] }}/edit">Edit</a></li>
 {% endfor %}
+
+<p><a href="/users/new">New user</a></p>
 </body>
 </html>

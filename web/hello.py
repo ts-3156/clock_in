@@ -38,6 +38,26 @@ def find_user(id):
     return {'id': row[0], 'name': row[1], 'idm': row[2], 'is_working': str(row[3]) == '1'}
 
 
+def find_user_by_idm(idm):
+    if not idm:
+        return None
+
+    cur = get_db().cursor()
+    result = cur.execute('select id, name, idm, is_working from users where idm = ?', (idm,))
+    row = result.fetchone()
+    if row is None:
+        return None
+
+    return {'id': row[0], 'name': row[1], 'idm': row[2], 'is_working': str(row[3]) == '1'}
+
+
+def create_user(name, idm, is_working):
+    cur = get_db().cursor()
+    cur.execute('insert into users (name, idm, is_working) values (?, ?, ?)', (name, idm, is_working))
+    get_db().commit()
+    return find_user_by_idm(idm)
+
+
 def update_user(id, name, idm, is_working):
     if not id:
         return None
@@ -45,6 +65,7 @@ def update_user(id, name, idm, is_working):
     cur = get_db().cursor()
     cur.execute('update users set name = ?, idm = ?, is_working = ? where id = ?', (name, idm, is_working, id))
     get_db().commit()
+
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -54,8 +75,25 @@ def close_connection(exception):
 
 
 @app.route('/')
+def root():
+    return redirect(url_for('index'))
+
+
+@app.route('/users')
 def index():
     return render_template('index.html', title='All users', users=all_users())
+
+
+@app.route('/users/new')
+def new():
+    return render_template('new.html', title='New')
+
+
+@app.route('/users', methods=['POST'])
+def create():
+    is_working = '1' if request.form['is_working'] == 'True' else '0'
+    user = create_user(name=request.form['name'], idm=request.form['idm'], is_working=is_working)
+    return redirect(url_for('edit', id=user['id']))
 
 
 @app.route('/users/<id>/edit')
