@@ -2,7 +2,6 @@
 
 import os
 import signal
-import sqlite3
 import sys
 import time
 
@@ -10,9 +9,6 @@ import db
 import slack
 import sound
 import suica
-
-con = sqlite3.connect('./clock_in.sqlite3')
-cur = con.cursor()
 
 clock_in_sound = './clock_in.mp3'
 clock_out_sound = './clock_out.mp3'
@@ -33,20 +29,18 @@ def is_raspberrypi():
 
 
 def clock_in(idm):
-    global last_action
-    cur.execute('update users set is_working = "1" where idm = ?', (idm,))
-    con.commit()
-    last_action = {'idm': idm, 'action': 'clock_in', 'time': time.time()}
+    db.set_working(idm, True)
+    return {'idm': idm, 'action': 'clock_in', 'time': time.time()}
 
 
 def clock_out(idm):
-    global last_action
-    cur.execute('update users set is_working = "0" where idm = ?', (idm,))
-    con.commit()
-    last_action = {'idm': idm, 'action': 'clock_out', 'time': time.time()}
+    db.set_working(idm, False)
+    return {'idm': idm, 'action': 'clock_out', 'time': time.time()}
 
 
 if __name__ == '__main__':
+    global last_action
+
     while True:
         time.sleep(1)
         idm = suica.read()
@@ -61,13 +55,13 @@ if __name__ == '__main__':
             continue
 
         if user['is_working']:
-            clock_out(idm)
+            last_action = clock_out(idm)
             sound.play(clock_out_sound)
             msg = 'Clock out ' + user['name']
             slack.post(msg)
             print(msg)
         else:
-            clock_in(idm)
+            last_action = clock_in(idm)
             sound.play(clock_in_sound)
             msg = 'Clock in ' + user['name']
             slack.post(msg)

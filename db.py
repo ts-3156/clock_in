@@ -27,6 +27,11 @@ def find_user(idm):
     return {'id': row[0], 'name': row[1], 'idm': row[2], 'is_working': str(row[3]) == '1'}
 
 
+def set_working(idm, value):
+    cur.execute('update users set is_working = ? where idm = ?', ('1' if value else '0', idm))
+    con.commit()
+
+
 if __name__ == '__main__':
     user = find_user('YOUR_IDM')
     print(user)
