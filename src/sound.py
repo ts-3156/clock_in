@@ -21,5 +21,5 @@ def play(fpath, sync=True):
 
 
 if __name__ == '__main__':
-    _play('./sounds/clock_in.mp3')
-    _play('./sounds/clock_out.mp3')
+    _play('../sounds/clock_in.mp3')
+    _play('../sounds/clock_out.mp3')

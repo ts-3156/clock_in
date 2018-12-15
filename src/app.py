@@ -4,10 +4,7 @@ import signal
 import sys
 import time
 
-import db
-import slack
-import sound
-import suica
+from src import db, suica, sound, slack
 
 
 def signal_handler(signal, frame):
@@ -30,12 +27,12 @@ def clock_out(idm):
 
 if __name__ == '__main__':
     mp3 = {
-        'clock_in': './sounds/clock_in.mp3',
-        'clock_out': './sounds/clock_out.mp3',
-        'too_short_interval': './sounds/too_short_interval.mp3',
-        'system_started': './sounds/system_started.mp3',
-        'ready_to_touch': './sounds/ready_to_touch.mp3',
-        'add_new_user': './sounds/add_new_user.mp3',
+        'clock_in': '../sounds/clock_in.mp3',
+        'clock_out': '../sounds/clock_out.mp3',
+        'too_short_interval': '../sounds/too_short_interval.mp3',
+        'system_started': '../sounds/system_started.mp3',
+        'ready_to_touch': '../sounds/ready_to_touch.mp3',
+        'add_new_user': '../sounds/add_new_user.mp3',
     }
     last_action = {'idm': None, 'action': None, 'time': None}
 
