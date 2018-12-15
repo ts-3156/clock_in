@@ -35,6 +35,7 @@ if __name__ == '__main__':
         'too_short_interval': './sounds/too_short_interval.mp3',
         'system_started': './sounds/system_started.mp3',
         'ready_to_touch': './sounds/ready_to_touch.mp3',
+        'add_new_user': './sounds/add_new_user.mp3',
     }
     last_action = {'idm': None, 'action': None, 'time': None}
 
@@ -50,6 +51,7 @@ if __name__ == '__main__':
         user = db.find_user(idm)
         if user is None:
             user = db.add_user(idm)
+            sound.play(mp3['add_new_user'])
 
         if idm == last_action['idm'] and time.time() - last_action['time'] < 5:
             sound.play(mp3['too_short_interval'])
