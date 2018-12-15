@@ -12,9 +12,12 @@ def _play(fpath):
     subprocess.call('/usr/bin/omxplayer ' + fpath + ' >/dev/null 2>&1', shell=True)
 
 
-def play(fpath):
+def play(fpath, sync=True):
     if is_raspberrypi() and os.path.exists(fpath):
-        threading.Thread(target=_play, args=(fpath,)).start()
+        if sync:
+            _play(fpath)
+        else:
+            threading.Thread(target=_play, args=(fpath,)).start()
 
 
 if __name__ == '__main__':
