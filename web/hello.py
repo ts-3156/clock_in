@@ -96,7 +96,7 @@ def create():
 def update(id):
     is_working = '1' if request.form['is_working'] == 'True' else '0'
     update_user(id, name=request.form['name'], idm=request.form['idm'], is_working=is_working)
-    return redirect(url_for('index', id=id))
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
