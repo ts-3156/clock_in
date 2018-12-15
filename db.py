@@ -2,7 +2,7 @@ import sqlite3
 
 import name
 
-con = sqlite3.connect('/home/pi/Repo/clock_in/clock_in.sqlite3')
+con = sqlite3.connect('./clock_in.sqlite3')
 cur = con.cursor()
 
 

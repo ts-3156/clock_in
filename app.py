@@ -29,8 +29,9 @@ def clock_out(idm):
 
 
 if __name__ == '__main__':
-    clock_in_sound = '/home/pi/Repo/clock_in/sounds/clock_in.mp3'
-    clock_out_sound = '/home/pi/Repo/clock_in/sounds/clock_out.mp3'
+    clock_in_sound = './sounds/clock_in.mp3'
+    clock_out_sound = './sounds/clock_out.mp3'
+    too_short_interval_sound = './sounds/too_short_interval.mp3'
     last_action = {'idm': None, 'action': None, 'time': None}
 
     while True:
@@ -44,6 +45,7 @@ if __name__ == '__main__':
             user = db.add_user(idm)
 
         if idm == last_action['idm'] and time.time() - last_action['time'] < 5:
+            sound.play(too_short_interval_sound)
             continue
 
         if user['is_working']:
