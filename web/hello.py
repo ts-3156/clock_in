@@ -84,29 +84,19 @@ def index():
     return render_template('index.html', title='All users', users=all_users())
 
 
-@app.route('/users/new')
-def new():
-    return render_template('new.html', title='New')
-
-
 @app.route('/users', methods=['POST'])
 def create():
     is_working = '1' if request.form['is_working'] == 'True' else '0'
     user = create_user(name=request.form['name'], idm=request.form['idm'], is_working=is_working)
-    return redirect(url_for('edit', id=user['id']))
-
-
-@app.route('/users/<id>/edit')
-def edit(id):
-    user = find_user(id)
-    return render_template('edit.html', title='Edit ' + user['name'], user=find_user(id))
+    print(user)
+    return redirect(url_for('index'))
 
 
 @app.route('/users/<id>', methods=['POST'])
 def update(id):
     is_working = '1' if request.form['is_working'] == 'True' else '0'
     update_user(id, name=request.form['name'], idm=request.form['idm'], is_working=is_working)
-    return redirect(url_for('edit', id=id))
+    return redirect(url_for('index', id=id))
 
 
 if __name__ == "__main__":
