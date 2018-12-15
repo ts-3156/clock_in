@@ -69,6 +69,15 @@ def update_user(id, name, idm, is_working):
     get_db().commit()
 
 
+def delete_user(id):
+    if not id:
+        return None
+
+    cur = get_db().cursor()
+    cur.execute('delete from users where id = ?', (id,))
+    get_db().commit()
+
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
@@ -96,8 +105,11 @@ def create():
 
 @app.route('/users/<id>', methods=['POST'])
 def update(id):
-    is_working = '1' if request.form['is_working'] == 'True' else '0'
-    update_user(id, name=request.form['name'], idm=request.form['idm'], is_working=is_working)
+    if request.form.get('_method') == 'DELETE':
+        delete_user(id)
+    else:
+        is_working = '1' if request.form['is_working'] == 'True' else '0'
+        update_user(id, name=request.form['name'], idm=request.form['idm'], is_working=is_working)
     return redirect(url_for('index'))
 
 

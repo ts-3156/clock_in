@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bootstrap CRUD Data Table for Database with Modal Form</title>
+<title>Manage Employees</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -264,6 +264,10 @@ $(document).ready(function(){
         $(e.currentTarget).find('input[name="idm"]').val($(e.relatedTarget).data('user-idm'));
         $(e.currentTarget).find('select[name="is_working"] option[value="' + $(e.relatedTarget).data('user-is-working') + '"]').prop('selected',true);
     })
+
+    $('#deleteEmployeeModal').on('show.bs.modal', function (e) {
+        $(e.currentTarget).find('form').attr('action', '/users/' + $(e.relatedTarget).data('user-id'));
+    })
 });
 </script>
 </head>
@@ -313,7 +317,7 @@ $(document).ready(function(){
                         <td>{{ user['is_working'] }}</td>
                         <td>
                             <a href="#editEmployeeModal" class="edit" data-toggle="modal" data-user-id="{{ user['id'] }}" data-user-name="{{ user['name'] }}" data-user-idm="{{ user['idm'] }}" data-user-is-working="{{ user['is_working'] }}"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal" data-user-id="{{ user['id'] }}"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -409,7 +413,7 @@ $(document).ready(function(){
     <div id="deleteEmployeeModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form action="/users/_id_" method="post">
                     <div class="modal-header">
                         <h4 class="modal-title">Delete Employee</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -422,6 +426,7 @@ $(document).ready(function(){
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
                         <input type="submit" class="btn btn-danger" value="Delete">
                     </div>
+                    <input type="hidden" name="_method" value="DELETE">
                 </form>
             </div>
         </div>
