@@ -1,6 +1,6 @@
 import sqlite3
 
-from src import name
+import name
 
 con = sqlite3.connect('../clock_in.sqlite3')
 cur = con.cursor()

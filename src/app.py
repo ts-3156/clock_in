@@ -4,7 +4,10 @@ import signal
 import sys
 import time
 
-from src import db, suica, sound, slack
+import db
+import suica
+import sound
+import slack
 
 
 def signal_handler(signal, frame):
